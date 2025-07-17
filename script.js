@@ -1,9 +1,21 @@
 // Função utilitária para renderizar o nome do cliente e botão de remoção na lista de clientes.
 function renderCliente(cliente) {
   const item = document.createElement("li");
-  item.innerHTML = `${cliente.nome} <button onclick="remove('${cliente._id}')">x</button>`;
+  item.innerHTML = `${cliente.nome} <button onclick="remove('${cliente._id}')">X</button>`;
   htmlLista.appendChild(item);
-}
+};
+// Função utilitária para deletar o nome do cliente quando o botão X é clicado.
+function remove(_id) {
+    // o método DELETE remove o nome da database
+  fetch(`https://crudcrud.com/api/90b905aface849ce864c05c63e3ede65/clientes/${_id}`, {
+    method: "DELETE"
+  }).then(() => {
+    // Declara uma variável button que procura o primeiro botão com o ID do cliente deletado na página.
+    const button = document.querySelector(`button[onclick="remove('${_id}')"]`);
+    // Se o botão for encontrado, remove o elemento. button.parentElement é o <li> que tem o ID do cliente.
+    if (button) button.parentElement.remove();
+  });
+};
 
 // Resgata o id listaClientes do HTML, onde está a lista de clientes
 const htmlLista = document.getElementById("listaClientes")
@@ -33,4 +45,4 @@ document.getElementById("add").addEventListener("click", ()=>{
     .then(cliente => {
         renderCliente(cliente);
     });
-
+});
