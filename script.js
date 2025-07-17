@@ -1,3 +1,10 @@
+// Função utilitária para renderizar o nome do cliente e botão de remoção na lista de clientes.
+function renderCliente(cliente) {
+  const item = document.createElement("li");
+  item.innerHTML = `${cliente.nome} <button onclick="remove('${cliente._id}')">x</button>`;
+  htmlLista.appendChild(item);
+}
+
 // Resgata o id listaClientes do HTML, onde está a lista de clientes
 const htmlLista = document.getElementById("listaClientes")
 // Fetch no CrudCrud, default GET, retorna objeto Response
@@ -6,33 +13,24 @@ fetch("https://crudcrud.com/api/90b905aface849ce864c05c63e3ede65/clientes")
 // .then usa como argumento outra função anônima que declara a variável listaDeClientes
 .then(listaDeClientes => {
     // Itera sobre cada elemento do array (cliente)
-    listaDeClientes.forEach(cliente => {
-        // Cria um novo elemento de lista para cada tarefa, armazenado numa variável item
-        const item = document.createElement("li");
-        // Define o conteúdo de cada item como sendo o nome do cliente, e o HTML para renderizar um botão X
-        // é utilizado .innerHTML ao invés de .textContent para sinalizar que o conteúdo dessa variável deve ser introduzido ao código HTML, e não transformado em string.
-        item.innerHTML = `${cliente.nome} <button>x</button>`;
-        // Adiciona novo item à lista de clientes do HTML
-        htmlLista.appendChild(item);
-    });
+    listaDeClientes.forEach(renderCliente);
 });
-
+// Resgata o botão Cadastrar no HTML quando ele é clicado
 document.getElementById("add").addEventListener("click", ()=>{
+    // Determina a variável nome como sendo o valor inputado pelo usuário no campo "cliente"
     const nome = document.getElementById("cliente").value;
-
+    // Requisição POST para o CrudCrud criar o nome
     fetch("https://crudcrud.com/api/90b905aface849ce864c05c63e3ede65/clientes", {
-
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
+        // Converte o objeto JS para uma string JSON
         body: JSON.stringify({nome: nome})
-    })
+    })// Converte o objeto Response em json
+    // Independente dos dados gravados na API serem um JSON, ela sempre retorna um objeto Response, portanto precisa ser convertido de volta para JSON
     .then(resposta =>resposta.json())
     .then(cliente => {
-        const item = document.createElement("li");
-        item.innerHTML = `${cliente.nome} <button>x</button>`;
-        htmlLista.appendChild(item);
-    })
+        renderCliente(cliente);
+    });
 
-});
